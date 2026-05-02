@@ -6,6 +6,7 @@
 #include <linux/limits.h>
 #include <sys/wait.h>
 #include <signal.h>
+#include <fcntl.h>
 #include "LineParser.h"
 
 void execute(cmdLine *pCmdLine){
@@ -71,6 +72,18 @@ int main(int argc, char const *argv[])
         }
         pid_t pid=fork();
         if(pid==0){
+            if(mycmdLine->inputRedirect != NULL){
+                int fd = open(mycmdLine->inputRedirect, O_RDONLY);
+                if(fd == -1){ perror("open input failed"); _exit(1); }
+                dup2(fd, STDIN_FILENO);  
+                close(fd);
+            }
+            if(mycmdLine->outputRedirect != NULL){
+                int fd = open(mycmdLine->outputRedirect, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+                if(fd == -1){ perror("open output failed"); _exit(1); }
+                dup2(fd, STDOUT_FILENO); 
+                close(fd);
+            }
             execute(mycmdLine);
         }
         else {

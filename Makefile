@@ -1,7 +1,10 @@
-all: myshell looper Printers
+all: myshell mypipe looper Printers
 
 myshell: myshell.c LineParser.o
 	gcc -Wall -g -o myshell myshell.c LineParser.o
+
+mypipe: mypipe.c
+	gcc -Wall -g -o mypipe mypipe.c
 
 looper: looper.c
 	gcc -Wall -g -o looper looper.c
@@ -13,4 +16,4 @@ LineParser.o: LineParser.c LineParser.h
 	gcc -Wall -g -c LineParser.c
 
 clean:
-	rm -f myshell looper Printers LineParser.o
+	rm -f myshell mypipe looper Printers LineParser.o

@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <linux/limits.h>
 #include <sys/wait.h>
+#include <signal.h>
 #include "LineParser.h"
 
 void execute(cmdLine *pCmdLine){
@@ -33,6 +34,41 @@ int main(int argc, char const *argv[])
         if(strncmp(mystream,"quit",4)==0)
             exit(0);
         cmdLine* mycmdLine=parseCmdLines(mystream);
+        if(strcmp(mycmdLine->arguments[0],"cd")==0){
+            if(chdir(mycmdLine->arguments[1])==-1){
+                fprintf(stderr,"Error changing directory!\n");
+            }
+            freeCmdLines(mycmdLine);
+            continue;
+        }
+        if(strcmp(mycmdLine->arguments[0],"stop")==0){
+            char* id=mycmdLine->arguments[1];
+            int int_id=atoi(id);
+            kill(int_id,SIGSTOP);
+            freeCmdLines(mycmdLine);
+            continue;
+        }
+        if(strcmp(mycmdLine->arguments[0],"wakeup")==0){
+            char* id=mycmdLine->arguments[1];
+            int int_id=atoi(id);
+            kill(int_id,SIGCONT);
+            freeCmdLines(mycmdLine);
+            continue;
+        }
+        if(strcmp(mycmdLine->arguments[0],"ice")==0){
+            char* id=mycmdLine->arguments[1];
+            int int_id=atoi(id);
+            kill(int_id,SIGINT);
+            freeCmdLines(mycmdLine);
+            continue;
+        }
+        if(strcmp(mycmdLine->arguments[0],"nuke")==0){
+            char* id=mycmdLine->arguments[1];
+            int int_id=atoi(id);
+            kill(-int_id,SIGKILL);
+            freeCmdLines(mycmdLine);
+            continue;
+        }
         pid_t pid=fork();
         if(pid==0){
             execute(mycmdLine);

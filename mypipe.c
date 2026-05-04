@@ -18,9 +18,14 @@ int main(int argc, char *argv[])
         printf("Child received: %s\n", buf);
         close(fd[0]);
     } else {
-        close(fd[0]);                           
+        close(fd[0]);
+        if (argc < 2) {
+            fprintf(stderr, "Must give more arguments\n");
+            close(fd[1]);
+            return 1;
+        }
         write(fd[1], argv[1], strlen(argv[1]));
-        close(fd[1]);                           
+        close(fd[1]);
     }
     return 0;
 }

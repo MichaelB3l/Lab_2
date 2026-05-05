@@ -46,7 +46,7 @@ int main(int argc, char const *argv[])
         if(strcmp(mycmdLine->arguments[0],"stop")==0){
             char* id=mycmdLine->arguments[1];
             int int_id=atoi(id);
-            kill(int_id,SIGSTOP);
+            kill(int_id,SIGTSTP);
             freeCmdLines(mycmdLine);
             continue;
         }
@@ -68,8 +68,6 @@ int main(int argc, char const *argv[])
             char* id=mycmdLine->arguments[1];
             int int_id=atoi(id);
             kill(-int_id,SIGKILL);
-            kill(int_id,SIGKILL); // also kill group leader explicitly — WSL doesn't always deliver group kill to the leader
-            waitpid(int_id, NULL, 0); // reap the zombie: background process has no waitpid, so it lingers in process table after kill
             freeCmdLines(mycmdLine);
             continue;
         }

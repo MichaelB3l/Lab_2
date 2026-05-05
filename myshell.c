@@ -72,7 +72,7 @@ int main(int argc, char const *argv[])
             continue;
         }
         pid_t pid=fork();
-        if(pid==0){
+        if(pid==0){ 
             if(mycmdLine->inputRedirect != NULL){
                 int fd = open(mycmdLine->inputRedirect, O_RDONLY);
                 if(fd == -1){
